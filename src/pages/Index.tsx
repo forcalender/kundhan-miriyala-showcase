@@ -3,8 +3,11 @@ import React, { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
+import Stats from "@/components/Stats";
 import Projects from "@/components/Projects";
 import Skills from "@/components/Skills";
+import Experience from "@/components/Experience";
+import Testimonials from "@/components/Testimonials";
 import Blog from "@/components/Blog";
 import Contact from "@/components/Contact";
 import ParticleBackground from "@/components/ParticleBackground";
@@ -40,8 +43,11 @@ const Index = () => {
       <main className="flex-1 flex flex-col justify-start items-center relative z-10">
         <Hero />
         <About />
+        <Stats />
         <Projects />
         <Skills />
+        <Experience />
+        <Testimonials />
         <Blog />
         <Contact />
       </main>
