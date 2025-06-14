@@ -12,6 +12,7 @@ const allProjects = [
     gradient: "from-purple-500 to-pink-500",
     stats: { users: "10K+", accuracy: "95%", uptime: "99.9%" },
     demoVideo: "https://example.com/demo1.mp4",
+    imageUrl: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop",
     liveUrl: "https://ai-chatbot-demo.com",
     githubUrl: "https://github.com/kundhan/ai-chatbot",
     featured: true
@@ -23,6 +24,7 @@ const allProjects = [
     gradient: "from-blue-500 to-cyan-500",
     stats: { impact: "500+", rating: "4.8/5", compliance: "WCAG 2.1" },
     demoVideo: "https://example.com/demo2.mp4",
+    imageUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&h=400&fit=crop",
     liveUrl: "https://accessible-reader.com",
     githubUrl: "https://github.com/kundhan/accessible-reader",
     featured: true
@@ -34,6 +36,7 @@ const allProjects = [
     gradient: "from-green-500 to-emerald-500",
     stats: { datasets: "50+", speed: "2x faster", insights: "100+" },
     demoVideo: "https://example.com/demo3.mp4",
+    imageUrl: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&h=400&fit=crop",
     liveUrl: "https://data-dashboard.com",
     githubUrl: "https://github.com/kundhan/data-dashboard",
     featured: true
@@ -45,6 +48,7 @@ const allProjects = [
     gradient: "from-orange-500 to-red-500",
     stats: { orders: "5K+", revenue: "$50K+", uptime: "99.8%" },
     demoVideo: "https://example.com/demo4.mp4",
+    imageUrl: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop",
     liveUrl: "https://ecommerce-demo.com",
     githubUrl: "https://github.com/kundhan/ecommerce",
     featured: false
@@ -56,6 +60,7 @@ const allProjects = [
     gradient: "from-indigo-500 to-purple-500",
     stats: { teams: "200+", tasks: "10K+", satisfaction: "4.9/5" },
     demoVideo: "https://example.com/demo5.mp4",
+    imageUrl: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=600&h=400&fit=crop",
     liveUrl: "https://taskmanager-demo.com",
     githubUrl: "https://github.com/kundhan/taskmanager",
     featured: false
@@ -67,6 +72,7 @@ const allProjects = [
     gradient: "from-teal-500 to-blue-500",
     stats: { accuracy: "92%", cities: "1000+", users: "2K+" },
     demoVideo: "https://example.com/demo6.mp4",
+    imageUrl: "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=600&h=400&fit=crop",
     liveUrl: "https://weather-analytics.com",
     githubUrl: "https://github.com/kundhan/weather-analytics",
     featured: false
@@ -156,7 +162,7 @@ const AllProjects = () => {
               {filteredProjects.map((proj, index) => (
                 <div
                   key={proj.title}
-                  className={`group relative bg-white/60 dark:bg-card/70 rounded-2xl p-6 border border-primary/10 shadow-lg backdrop-blur-md transition-all duration-500 cursor-pointer ${
+                  className={`group relative bg-white/60 dark:bg-card/70 rounded-2xl overflow-hidden border border-primary/10 shadow-lg backdrop-blur-md transition-all duration-500 cursor-pointer ${
                     isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-10'
                   } hover:scale-105 hover:shadow-2xl hover:border-accent/50 hover:bg-white/80 dark:hover:bg-card/90`}
                   style={{ 
@@ -168,7 +174,7 @@ const AllProjects = () => {
                 >
                   {/* Featured badge */}
                   {proj.featured && (
-                    <div className="absolute top-3 right-3 bg-gradient-to-r from-primary to-accent text-white text-xs px-2 py-1 rounded-full font-medium">
+                    <div className="absolute top-3 right-3 z-10 bg-gradient-to-r from-primary to-accent text-white text-xs px-2 py-1 rounded-full font-medium">
                       Featured
                     </div>
                   )}
@@ -176,76 +182,87 @@ const AllProjects = () => {
                   {/* Gradient border effect */}
                   <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${proj.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-300 -z-10`} />
                   
-                  {/* Project header */}
-                  <div className="flex items-start justify-between mb-4">
-                    <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${proj.gradient} flex items-center justify-center text-white font-bold text-lg group-hover:scale-110 transition-transform duration-300`}>
+                  {/* Project image */}
+                  <div className="relative h-48 overflow-hidden">
+                    <img 
+                      src={proj.imageUrl} 
+                      alt={proj.title}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                    
+                    {/* Project number overlay */}
+                    <div className={`absolute top-4 left-4 w-10 h-10 rounded-full bg-gradient-to-r ${proj.gradient} flex items-center justify-center text-white font-bold text-sm group-hover:scale-110 transition-transform duration-300`}>
                       {index + 1}
                     </div>
                     
                     {/* Demo video toggle */}
                     <button
                       onClick={() => handlePlayClick(proj, index)}
-                      className="p-2 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors"
+                      className="absolute top-4 right-4 p-2 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors"
                     >
-                      <Play className="text-primary" size={16} />
+                      <Play className="text-white" size={16} />
                     </button>
                   </div>
 
-                  <h3 className="font-bold text-xl mb-3 text-primary group-hover:text-accent transition-colors duration-200">
-                    {proj.title}
-                  </h3>
+                  {/* Project content */}
+                  <div className="p-6">
+                    <h3 className="font-bold text-xl mb-3 text-primary group-hover:text-accent transition-colors duration-200">
+                      {proj.title}
+                    </h3>
 
-                  <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
-                    {proj.description}
-                  </p>
+                    <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
+                      {proj.description}
+                    </p>
 
-                  {/* Enhanced stats */}
-                  <div className="grid grid-cols-3 gap-4 mb-4 text-xs">
-                    {Object.entries(proj.stats).map(([key, value]) => (
-                      <div key={key} className="text-center p-2 bg-primary/5 rounded-lg">
-                        <div className="font-bold text-primary">{value}</div>
-                        <div className="text-muted-foreground capitalize">{key}</div>
-                      </div>
-                    ))}
-                  </div>
+                    {/* Enhanced stats */}
+                    <div className="grid grid-cols-3 gap-4 mb-4 text-xs">
+                      {Object.entries(proj.stats).map(([key, value]) => (
+                        <div key={key} className="text-center p-2 bg-primary/5 rounded-lg">
+                          <div className="font-bold text-primary">{value}</div>
+                          <div className="text-muted-foreground capitalize">{key}</div>
+                        </div>
+                      ))}
+                    </div>
 
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {proj.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="inline-block bg-gradient-to-r bg-opacity-10 px-2 py-1 text-xs rounded-full font-medium transition-all duration-200 group-hover:scale-105 bg-primary/10 text-primary"
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {proj.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="inline-block bg-gradient-to-r bg-opacity-10 px-2 py-1 text-xs rounded-full font-medium transition-all duration-200 group-hover:scale-105 bg-primary/10 text-primary"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Action buttons */}
+                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <a
+                        href={proj.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-xs text-primary hover:text-accent transition-colors px-3 py-1 bg-primary/10 rounded-full hover:bg-accent/10"
                       >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Action buttons */}
-                  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <a
-                      href={proj.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-xs text-primary hover:text-accent transition-colors px-3 py-1 bg-primary/10 rounded-full hover:bg-accent/10"
-                    >
-                      <Eye size={12} />
-                      Live Demo
-                    </a>
-                    <a
-                      href={proj.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-xs text-primary hover:text-accent transition-colors px-3 py-1 bg-primary/10 rounded-full hover:bg-accent/10"
-                    >
-                      <Github size={12} />
-                      Code
-                    </a>
+                        <Eye size={12} />
+                        Live Demo
+                      </a>
+                      <a
+                        href={proj.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-xs text-primary hover:text-accent transition-colors px-3 py-1 bg-primary/10 rounded-full hover:bg-accent/10"
+                      >
+                        <Github size={12} />
+                        Code
+                      </a>
+                    </div>
                   </div>
 
                   {/* Demo indicator */}
                   {playingDemo === index && (
-                    <div className="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                    <div className="absolute top-2 left-2 w-3 h-3 bg-red-500 rounded-full animate-pulse z-10"></div>
                   )}
                 </div>
               ))}

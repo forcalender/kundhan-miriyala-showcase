@@ -12,6 +12,7 @@ interface Project {
   gradient: string;
   stats: { [key: string]: string };
   demoVideo: string;
+  imageUrl: string;
   liveUrl: string;
   githubUrl: string;
 }
@@ -50,7 +51,7 @@ const ProjectCard = ({
   return (
     <>
       <div
-        className={`group relative bg-white/60 dark:bg-card/70 rounded-2xl p-6 border border-primary/10 shadow-lg backdrop-blur-md transition-all duration-500 cursor-pointer ${
+        className={`group relative bg-white/60 dark:bg-card/70 rounded-2xl overflow-hidden border border-primary/10 shadow-lg backdrop-blur-md transition-all duration-500 cursor-pointer ${
           isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-10'
         } hover:scale-105 hover:shadow-2xl hover:border-accent/50 hover:bg-white/80 dark:hover:bg-card/90`}
         style={{ 
@@ -63,46 +64,57 @@ const ProjectCard = ({
         {/* Gradient border effect */}
         <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${project.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-300 -z-10`} />
         
-        {/* Project header */}
-        <div className="flex items-start justify-between mb-4">
-          <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${project.gradient} flex items-center justify-center text-white font-bold text-lg group-hover:scale-110 transition-transform duration-300`}>
+        {/* Project image */}
+        <div className="relative h-48 overflow-hidden">
+          <img 
+            src={project.imageUrl} 
+            alt={project.title}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+          
+          {/* Project number overlay */}
+          <div className={`absolute top-4 left-4 w-10 h-10 rounded-full bg-gradient-to-r ${project.gradient} flex items-center justify-center text-white font-bold text-sm group-hover:scale-110 transition-transform duration-300`}>
             {index + 1}
           </div>
           
           {/* Demo video toggle */}
           <button
             onClick={handlePlayClick}
-            className="p-2 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors"
+            className="absolute top-4 right-4 p-2 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors"
           >
-            <Play className="text-primary" size={16} />
+            <Play className="text-white" size={16} />
           </button>
         </div>
 
-        <h3 className="font-bold text-xl mb-3 text-primary group-hover:text-accent transition-colors duration-200">
-          {project.title}
-        </h3>
+        {/* Project content */}
+        <div className="p-6">
+          <h3 className="font-bold text-xl mb-3 text-primary group-hover:text-accent transition-colors duration-200">
+            {project.title}
+          </h3>
 
-        <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
-          {project.description}
-        </p>
+          <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
+            {project.description}
+          </p>
 
-        {/* Enhanced stats */}
-        <ProjectStats stats={project.stats} />
+          {/* Enhanced stats */}
+          <ProjectStats stats={project.stats} />
 
-        {/* Tags */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          {project.tags.map((tag) => (
-            <span
-              key={tag}
-              className="inline-block bg-gradient-to-r bg-opacity-10 px-2 py-1 text-xs rounded-full font-medium transition-all duration-200 group-hover:scale-105 bg-primary/10 text-primary"
-            >
-              {tag}
-            </span>
-          ))}
+          {/* Tags */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {project.tags.map((tag) => (
+              <span
+                key={tag}
+                className="inline-block bg-gradient-to-r bg-opacity-10 px-2 py-1 text-xs rounded-full font-medium transition-all duration-200 group-hover:scale-105 bg-primary/10 text-primary"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* Action buttons */}
+          <ProjectActions liveUrl={project.liveUrl} githubUrl={project.githubUrl} />
         </div>
-
-        {/* Action buttons */}
-        <ProjectActions liveUrl={project.liveUrl} githubUrl={project.githubUrl} />
 
         {/* Demo indicator */}
         {playingDemo === index && (

@@ -15,6 +15,7 @@ const featuredProjects = [
     gradient: "from-purple-500 to-pink-500",
     stats: { users: "10K+", accuracy: "95%", uptime: "99.9%" },
     demoVideo: "https://example.com/demo1.mp4",
+    imageUrl: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop",
     liveUrl: "https://ai-chatbot-demo.com",
     githubUrl: "https://github.com/kundhan/ai-chatbot"
   },
@@ -25,6 +26,7 @@ const featuredProjects = [
     gradient: "from-blue-500 to-cyan-500",
     stats: { impact: "500+", rating: "4.8/5", compliance: "WCAG 2.1" },
     demoVideo: "https://example.com/demo2.mp4",
+    imageUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&h=400&fit=crop",
     liveUrl: "https://accessible-reader.com",
     githubUrl: "https://github.com/kundhan/accessible-reader"
   },
@@ -35,6 +37,7 @@ const featuredProjects = [
     gradient: "from-green-500 to-emerald-500",
     stats: { datasets: "50+", speed: "2x faster", insights: "100+" },
     demoVideo: "https://example.com/demo3.mp4",
+    imageUrl: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&h=400&fit=crop",
     liveUrl: "https://data-dashboard.com",
     githubUrl: "https://github.com/kundhan/data-dashboard"
   },
