@@ -1,28 +1,45 @@
 
 import React from "react";
-import { Button } from "@/components/ui/button";
 
-const Hero = () => (
-  <section className="flex flex-col items-center justify-center text-center py-20 px-4 md:px-0 bg-background animate-fade-in min-h-[60vh]" id="hero">
-    <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold font-playfair mb-2 text-primary">
-      Problem solving drives innovation.
-    </h1>
-    <h2 className="text-xl md:text-2xl font-playfair text-primary mb-2">
-      AI Enthusiast &bull; Problem Solver
-    </h2>
-    <h3 className="text-lg md:text-xl text-muted-foreground mb-6 font-semibold">
-      I’m an aspiring AI specialist passionate about solving real-world problems using data science and generative AI.<br />
-      I thrive on building innovative, accessible solutions—turning complex challenges into impactful products.
-    </h3>
-    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-      <Button asChild size="lg">
-        <a href="#projects">View Projects</a>
-      </Button>
-      <Button asChild variant="outline" size="lg">
-        <a href="#contact">Contact Me</a>
-      </Button>
-    </div>
-  </section>
-);
+const Hero = () => {
+  return (
+    <section className="w-full text-center pt-16 pb-16 flex flex-col items-center relative">
+      {/* Floating gradient animated blob */}
+      <div
+        className="absolute -top-24 right-12 w-48 h-48 bg-primary/20 blur-2xl rounded-full animate-bounce opacity-50 z-0"
+        aria-hidden="true"
+      />
+      {/* Avatar */}
+      <div className="relative z-10 mb-6">
+        <div className="w-28 h-28 rounded-full bg-muted flex items-center justify-center ring-4 ring-primary/10 mx-auto shadow-lg overflow-hidden">
+          <span className="text-5xl text-primary font-playfair">KM</span>
+        </div>
+      </div>
+      <h1 className="relative z-10 text-4xl md:text-5xl font-extrabold font-playfair text-primary mb-2">
+        Kundhan Miriyala
+      </h1>
+      <p className="relative z-10 text-muted-foreground text-lg md:text-xl font-medium mb-2">
+        AI Engineer &amp; Full Stack Developer
+      </p>
+      <p className="relative z-10 max-w-xl mx-auto text-muted-foreground/80 mb-6 px-4">
+        Passionate about building intelligent, accessible, and beautiful digital experiences at scale.
+      </p>
+      <div className="relative z-10 flex justify-center gap-3">
+        <a
+          href="#projects"
+          className="bg-primary text-primary-foreground font-semibold px-5 py-2 rounded shadow hover:bg-primary/90 transition-colors"
+        >
+          See Projects
+        </a>
+        <a
+          href="#contact"
+          className="bg-accent text-accent-foreground font-semibold px-5 py-2 rounded shadow hover:bg-accent/80 transition-colors"
+        >
+          Contact Me
+        </a>
+      </div>
+    </section>
+  );
+};
 
 export default Hero;
