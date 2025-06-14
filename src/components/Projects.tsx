@@ -1,8 +1,10 @@
 
 import React, { useState } from "react";
-import { ExternalLink, Github, Eye, Play, Pause } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useIntersectionObserver } from "@/hooks/useScrollAnimation";
+import ProjectHeader from "./projects/ProjectHeader";
+import ProjectFilters from "./projects/ProjectFilters";
+import ProjectCard from "./projects/ProjectCard";
+import ProjectCallToAction from "./projects/ProjectCallToAction";
 
 // Only showing featured projects here
 const featuredProjects = [
@@ -67,139 +69,31 @@ const Projects = () => {
       </div>
 
       <div className="relative z-10">
-        <div className="text-center mb-16">
-          <h2 className={`text-4xl md:text-5xl font-bold mb-4 font-playfair text-primary transition-all duration-700 ${isVisible ? 'animate-scale-in' : 'opacity-0 translate-y-10'}`}>
-            Featured Projects
-          </h2>
-          <div className={`w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto mb-6 rounded-full transition-all duration-700 delay-200 ${isVisible ? 'animate-slide-in-right' : 'opacity-0 scale-x-0'}`} />
-          <p className={`text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-8 transition-all duration-700 delay-300 ${isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-5'}`}>
-            Showcasing my best work that blends creativity with cutting-edge technology
-          </p>
+        <ProjectHeader isVisible={isVisible} />
 
-          {/* Category Filter */}
-          <div className={`flex flex-wrap justify-center gap-3 mb-12 transition-all duration-700 delay-400 ${isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-5'}`}>
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${
-                  selectedCategory === category
-                    ? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg'
-                    : 'bg-white/40 dark:bg-card/40 text-muted-foreground hover:text-primary border border-primary/10 hover:border-primary/30'
-                }`}
-              >
-                {category.charAt(0).toUpperCase() + category.slice(1)}
-              </button>
-            ))}
-          </div>
-        </div>
+        <ProjectFilters 
+          categories={categories}
+          selectedCategory={selectedCategory}
+          onCategoryChange={setSelectedCategory}
+          isVisible={isVisible}
+        />
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {filteredProjects.map((proj, index) => (
-            <div
+            <ProjectCard
               key={proj.title}
-              className={`group relative bg-white/60 dark:bg-card/70 rounded-2xl p-6 border border-primary/10 shadow-lg backdrop-blur-md transition-all duration-500 cursor-pointer ${
-                isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-10'
-              } hover:scale-105 hover:shadow-2xl hover:border-accent/50 hover:bg-white/80 dark:hover:bg-card/90`}
-              style={{ 
-                animationDelay: `${index * 0.2}s`,
-                transform: hoveredProject === index ? 'translateY(-10px) scale(1.05)' : undefined,
-              }}
-              onMouseEnter={() => setHoveredProject(index)}
-              onMouseLeave={() => setHoveredProject(null)}
-            >
-              {/* Gradient border effect */}
-              <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${proj.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-300 -z-10`} />
-              
-              {/* Project header */}
-              <div className="flex items-start justify-between mb-4">
-                <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${proj.gradient} flex items-center justify-center text-white font-bold text-lg group-hover:scale-110 transition-transform duration-300`}>
-                  {index + 1}
-                </div>
-                
-                {/* Demo video toggle */}
-                <button
-                  onClick={() => setPlayingDemo(playingDemo === index ? null : index)}
-                  className="p-2 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors"
-                >
-                  {playingDemo === index ? (
-                    <Pause className="text-primary" size={16} />
-                  ) : (
-                    <Play className="text-primary" size={16} />
-                  )}
-                </button>
-              </div>
-
-              <h3 className="font-bold text-xl mb-3 text-primary group-hover:text-accent transition-colors duration-200">
-                {proj.title}
-              </h3>
-
-              <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
-                {proj.description}
-              </p>
-
-              {/* Enhanced stats */}
-              <div className="grid grid-cols-3 gap-4 mb-4 text-xs">
-                {Object.entries(proj.stats).map(([key, value]) => (
-                  <div key={key} className="text-center p-2 bg-primary/5 rounded-lg">
-                    <div className="font-bold text-primary">{value}</div>
-                    <div className="text-muted-foreground capitalize">{key}</div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Tags */}
-              <div className="flex flex-wrap gap-2 mb-4">
-                {proj.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-block bg-gradient-to-r bg-opacity-10 px-2 py-1 text-xs rounded-full font-medium transition-all duration-200 group-hover:scale-105 bg-primary/10 text-primary"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              {/* Action buttons */}
-              <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <a
-                  href={proj.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-xs text-primary hover:text-accent transition-colors px-3 py-1 bg-primary/10 rounded-full hover:bg-accent/10"
-                >
-                  <Eye size={12} />
-                  Live Demo
-                </a>
-                <a
-                  href={proj.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-xs text-primary hover:text-accent transition-colors px-3 py-1 bg-primary/10 rounded-full hover:bg-accent/10"
-                >
-                  <Github size={12} />
-                  Code
-                </a>
-              </div>
-
-              {/* Demo indicator */}
-              {playingDemo === index && (
-                <div className="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-              )}
-            </div>
+              project={proj}
+              index={index}
+              isVisible={isVisible}
+              hoveredProject={hoveredProject}
+              playingDemo={playingDemo}
+              onHover={setHoveredProject}
+              onDemoToggle={setPlayingDemo}
+            />
           ))}
         </div>
 
-        {/* Call to action - Changed to "See All Projects" */}
-        <div className={`text-center mt-12 transition-all duration-700 delay-500 ${isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-5'}`}>
-          <Link
-            to="/projects"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-accent text-white font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 transform hover:-translate-y-1"
-          >
-            See All Projects
-            <ExternalLink size={16} />
-          </Link>
-        </div>
+        <ProjectCallToAction isVisible={isVisible} />
       </div>
     </section>
   );
