@@ -1,9 +1,11 @@
 
 import React, { useState } from "react";
 import { ExternalLink, Github, Eye, Play, Pause } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useIntersectionObserver } from "@/hooks/useScrollAnimation";
 
-const projectCards = [
+// Only showing featured projects here
+const featuredProjects = [
   {
     title: "AI Chatbot Platform",
     description: "Built a conversational AI using transformer models for customer support automation with real-time learning capabilities and advanced NLP processing.",
@@ -44,7 +46,7 @@ const Projects = () => {
 
   const categories = ["all", "AI/ML", "Web Development", "Data Science"];
   
-  const filteredProjects = projectCards.filter(project => {
+  const filteredProjects = featuredProjects.filter(project => {
     if (selectedCategory === "all") return true;
     if (selectedCategory === "AI/ML") return project.tags.includes("AI") || project.tags.includes("NLP") || project.tags.includes("TensorFlow");
     if (selectedCategory === "Web Development") return project.tags.includes("React") || project.tags.includes("TypeScript");
@@ -71,7 +73,7 @@ const Projects = () => {
           </h2>
           <div className={`w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto mb-6 rounded-full transition-all duration-700 delay-200 ${isVisible ? 'animate-slide-in-right' : 'opacity-0 scale-x-0'}`} />
           <p className={`text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-8 transition-all duration-700 delay-300 ${isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-5'}`}>
-            Showcasing innovative solutions that blend creativity with cutting-edge technology
+            Showcasing my best work that blends creativity with cutting-edge technology
           </p>
 
           {/* Category Filter */}
@@ -188,15 +190,15 @@ const Projects = () => {
           ))}
         </div>
 
-        {/* Call to action */}
+        {/* Call to action - Changed to "See All Projects" */}
         <div className={`text-center mt-12 transition-all duration-700 delay-500 ${isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-5'}`}>
-          <a
-            href="#contact"
+          <Link
+            to="/projects"
             className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-accent text-white font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 transform hover:-translate-y-1"
           >
-            Start Your Project
+            See All Projects
             <ExternalLink size={16} />
-          </a>
+          </Link>
         </div>
       </div>
     </section>
