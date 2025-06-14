@@ -3,6 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 
 const sections = [
+  { label: "Blog", href: "#blog" },
   { label: "Projects", href: "#projects" },
   { label: "About", href: "#about" },
   { label: "Skills", href: "#skills" },
@@ -37,3 +38,4 @@ const Navbar = () => (
 );
 
 export default Navbar;
+
