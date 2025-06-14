@@ -73,11 +73,6 @@ const ProjectCard = ({
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
           
-          {/* Project number overlay */}
-          <div className={`absolute top-4 left-4 w-10 h-10 rounded-full bg-gradient-to-r ${project.gradient} flex items-center justify-center text-white font-bold text-sm group-hover:scale-110 transition-transform duration-300`}>
-            {index + 1}
-          </div>
-          
           {/* Demo video toggle */}
           <button
             onClick={handlePlayClick}
