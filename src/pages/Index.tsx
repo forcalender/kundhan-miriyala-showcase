@@ -1,12 +1,22 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+// This is the landing page for Kundhan Miriyala's portfolio
+
+import React from "react";
+import Navbar from "@/components/Navbar";
+import Hero from "@/components/Hero";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background flex flex-col animate-fade-in">
+      <Navbar />
+      <Hero />
+      {/* 
+        Future sections: 
+        <Projects />, <About />, <Skills />, <Contact /> 
+      */}
+      <footer className="mt-auto py-6 text-center text-muted-foreground border-t bg-background/80">
+        &copy; {new Date().getFullYear()} Kundhan Miriyala • All Rights Reserved
+      </footer>
     </div>
   );
 };

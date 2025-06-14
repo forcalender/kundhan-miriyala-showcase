@@ -89,7 +89,11 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
-			}
+			},
+      fontFamily: {
+        'playfair': ["'Playfair Display'", "serif"],
+        // ... you can add more fonts if needed ...
+      },
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
