@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
   { label: "About", href: "#about" },
@@ -21,22 +22,28 @@ const Navbar = () => {
           KM
         </span>
       </a>
+      
       {/* Desktop Nav */}
-      <div className="hidden md:flex gap-6">
-        {navLinks.map((link, index) => (
-          <a
-            key={link.label}
-            href={link.href}
-            className="text-muted-foreground hover:text-primary font-medium transition-all duration-300 px-1 py-0.5 relative group animate-fade-in"
-            style={{ animationDelay: `${index * 0.1}s` }}
-          >
-            {link.label}
-            <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all duration-300" />
-          </a>
-        ))}
+      <div className="hidden md:flex items-center gap-6">
+        <div className="flex gap-6">
+          {navLinks.map((link, index) => (
+            <a
+              key={link.label}
+              href={link.href}
+              className="text-muted-foreground hover:text-primary font-medium transition-all duration-300 px-1 py-0.5 relative group animate-fade-in"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              {link.label}
+              <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all duration-300" />
+            </a>
+          ))}
+        </div>
+        <ThemeToggle />
       </div>
+      
       {/* Mobile Nav */}
-      <div className="md:hidden flex">
+      <div className="md:hidden flex items-center gap-2">
+        <ThemeToggle />
         <Button
           variant="outline"
           size="icon"
