@@ -4,6 +4,7 @@ import { Play, Pause } from "lucide-react";
 import ProjectStats from "./ProjectStats";
 import ProjectActions from "./ProjectActions";
 import VideoDialog from "./VideoDialog";
+import OptimizedImage from "@/components/ui/OptimizedImage";
 
 interface Project {
   title: string;
@@ -64,12 +65,15 @@ const ProjectCard = ({
         {/* Gradient border effect */}
         <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${project.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-300 -z-10`} />
         
-        {/* Project image */}
+        {/* Project image with optimization */}
         <div className="relative h-48 overflow-hidden">
-          <img 
-            src={project.imageUrl} 
+          <OptimizedImage
+            src={project.imageUrl}
             alt={project.title}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+            width={600}
+            height={400}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="transition-transform duration-300 group-hover:scale-110"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
           

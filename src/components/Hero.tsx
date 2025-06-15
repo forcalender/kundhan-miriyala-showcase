@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { ChevronDown, Sparkles } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import OptimizedImage from "@/components/ui/OptimizedImage";
 
 const Hero = () => {
   const { scrollY } = useScrollAnimation();
