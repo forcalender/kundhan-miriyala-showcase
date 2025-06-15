@@ -193,6 +193,43 @@
     background-clip: text;
   }
   
+  /* Animation utility classes */
+  .animate-delayed-fade-in {
+    @apply transition-all duration-700 delay-300;
+  }
+  
+  .animate-delayed-fade-in.visible {
+    @apply animate-fade-in;
+  }
+  
+  .animate-delayed-fade-in:not(.visible) {
+    @apply opacity-0 translate-y-5;
+  }
+  
+  .animate-delayed-scale-in {
+    @apply transition-all duration-700;
+  }
+  
+  .animate-delayed-scale-in.visible {
+    @apply animate-scale-in;
+  }
+  
+  .animate-delayed-scale-in:not(.visible) {
+    @apply opacity-0 translate-y-10;
+  }
+  
+  .animate-delayed-slide-in {
+    @apply transition-all duration-700 delay-200;
+  }
+  
+  .animate-delayed-slide-in.visible {
+    @apply animate-slide-in-right;
+  }
+  
+  .animate-delayed-slide-in:not(.visible) {
+    @apply opacity-0 scale-x-0;
+  }
+  
   /* Mobile-optimized animations */
   .animate-float {
     animation: float 6s ease-in-out infinite;
