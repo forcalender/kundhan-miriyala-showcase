@@ -4,8 +4,14 @@ import { useUrlStringState } from "./useUrlState";
 
 interface Project {
   title: string;
+  description: string;
   tags: string[];
-  [key: string]: any;
+  gradient: string;
+  stats: { [key: string]: string };
+  demoVideo: string;
+  imageUrl: string;
+  liveUrl: string;
+  githubUrl: string;
 }
 
 interface UseEnhancedProjectFiltersProps {
@@ -29,17 +35,17 @@ export const useEnhancedProjectFilters = ({
       if (selectedCategory === "all") return true;
       if (selectedCategory === "AI/ML") {
         return project.tags.some(tag => 
-          ['AI', 'NLP', 'TensorFlow', 'Machine Learning'].includes(tag)
+          ['AI', 'NLP', 'TensorFlow', 'Machine Learning', 'Python'].includes(tag)
         );
       }
       if (selectedCategory === "Web Development") {
         return project.tags.some(tag => 
-          ['React', 'TypeScript', 'JavaScript', 'Node.js'].includes(tag)
+          ['React', 'TypeScript', 'JavaScript', 'Node.js', 'WebAPI'].includes(tag)
         );
       }
       if (selectedCategory === "Data Science") {
         return project.tags.some(tag => 
-          ['Analytics', 'Python', 'Data', 'Visualization'].includes(tag)
+          ['Analytics', 'Python', 'Data', 'Visualization', 'Recharts'].includes(tag)
         );
       }
       return true;

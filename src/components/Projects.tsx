@@ -10,8 +10,21 @@ import ProjectCallToAction from "./projects/ProjectCallToAction";
 import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
+// Project interface that matches ProjectCard expectations
+interface Project {
+  title: string;
+  description: string;
+  tags: string[];
+  gradient: string;
+  stats: { [key: string]: string };
+  demoVideo: string;
+  imageUrl: string;
+  liveUrl: string;
+  githubUrl: string;
+}
+
 // Only showing featured projects here
-const featuredProjects = [
+const featuredProjects: Project[] = [
   {
     title: "AI Chatbot Platform",
     description: "Built a conversational AI using transformer models for customer support automation with real-time learning capabilities and advanced NLP processing.",
