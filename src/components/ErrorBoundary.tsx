@@ -1,17 +1,19 @@
 
 import React, { Component, ErrorInfo, ReactNode } from "react";
-import { Button } from "@/components/ui/button";
-import { AlertTriangle, RefreshCw } from "lucide-react";
+import ErrorFallback from "@/components/ui/ErrorFallback";
 
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
   componentName?: string;
+  onError?: (error: Error, errorInfo: ErrorInfo) => void;
+  showHome?: boolean;
 }
 
 interface State {
   hasError: boolean;
   error?: Error;
+  errorId?: string;
 }
 
 class ErrorBoundary extends Component<Props, State> {
@@ -20,15 +22,31 @@ class ErrorBoundary extends Component<Props, State> {
   };
 
   public static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error };
+    return { 
+      hasError: true, 
+      error,
+      errorId: Date.now().toString()
+    };
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Error caught by boundary:', error, errorInfo);
+    
+    // Report error to monitoring service in production
+    if (process.env.NODE_ENV === 'production') {
+      // Example: reportError(error, errorInfo);
+    }
+
+    // Call custom error handler if provided
+    this.props.onError?.(error, errorInfo);
   }
 
   private handleRetry = () => {
-    this.setState({ hasError: false, error: undefined });
+    this.setState({ 
+      hasError: false, 
+      error: undefined, 
+      errorId: undefined 
+    });
   };
 
   public render() {
@@ -38,21 +56,18 @@ class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="flex flex-col items-center justify-center p-8 text-center bg-white/60 dark:bg-card/70 rounded-2xl border border-destructive/20 backdrop-blur-md">
-          <AlertTriangle className="w-12 h-12 text-destructive mb-4" />
-          <h3 className="text-lg font-semibold text-primary mb-2">
-            Something went wrong
-          </h3>
-          <p className="text-muted-foreground mb-4 max-w-md">
-            {this.props.componentName 
+        <div className="flex items-center justify-center p-8">
+          <ErrorFallback
+            error={this.state.error}
+            resetError={this.handleRetry}
+            type="component"
+            title={this.props.componentName ? `${this.props.componentName} Error` : undefined}
+            description={this.props.componentName 
               ? `There was an error loading the ${this.props.componentName} component.`
-              : "We encountered an unexpected error. Please try refreshing the page."
+              : undefined
             }
-          </p>
-          <Button onClick={this.handleRetry} variant="outline" className="gap-2">
-            <RefreshCw className="w-4 h-4" />
-            Try Again
-          </Button>
+            showHome={this.props.showHome}
+          />
         </div>
       );
     }

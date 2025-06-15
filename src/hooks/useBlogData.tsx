@@ -1,6 +1,7 @@
-
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { BlogService, BlogPost, BlogPostsResponse, BlogPostsParams } from '@/services/blogService';
+import { useErrorHandler, handleNetworkError } from '@/hooks/useErrorHandler';
+import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 
 // Query keys for React Query
 export const blogQueryKeys = {
@@ -13,50 +14,126 @@ export const blogQueryKeys = {
   filtered: (params: BlogPostsParams) => [...blogQueryKeys.posts(), 'filtered', params] as const,
 };
 
-// Hook for fetching blog posts with pagination and filtering
+// Enhanced hook for fetching blog posts with error handling
 export const useBlogPosts = (params: BlogPostsParams = {}) => {
+  const { handleError } = useErrorHandler();
+  const { isOnline } = useNetworkStatus();
+  
   return useQuery({
     queryKey: blogQueryKeys.filtered(params),
-    queryFn: () => BlogService.getBlogPosts(params),
+    queryFn: async () => {
+      try {
+        return await BlogService.getBlogPosts(params);
+      } catch (error) {
+        const appError = handleNetworkError(error);
+        handleError(appError, 'BlogPosts fetch');
+        throw error;
+      }
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
+    enabled: isOnline,
+    retry: (failureCount, error) => {
+      // Don't retry on 4xx errors
+      if (error && typeof error === 'object' && 'status' in error) {
+        const status = (error as any).status;
+        if (status >= 400 && status < 500) return false;
+      }
+      return failureCount < 3;
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 };
 
-// Hook for fetching a single blog post
+// Enhanced hook for fetching a single blog post
 export const useBlogPost = (id: number) => {
+  const { handleError } = useErrorHandler();
+  const { isOnline } = useNetworkStatus();
+  
   return useQuery({
     queryKey: blogQueryKeys.post(id),
-    queryFn: () => BlogService.getBlogPost(id),
+    queryFn: async () => {
+      try {
+        return await BlogService.getBlogPost(id);
+      } catch (error) {
+        const appError = handleNetworkError(error);
+        handleError(appError, 'BlogPost fetch');
+        throw error;
+      }
+    },
     staleTime: 10 * 60 * 1000, // 10 minutes
-    enabled: !!id,
+    enabled: !!id && isOnline,
+    retry: (failureCount, error) => {
+      if (error && typeof error === 'object' && 'status' in error) {
+        const status = (error as any).status;
+        if (status === 404) return false; // Don't retry 404s
+        if (status >= 400 && status < 500) return false;
+      }
+      return failureCount < 3;
+    },
   });
 };
 
-// Hook for fetching featured posts
+// Enhanced hook for fetching featured posts
 export const useFeaturedPosts = (limit: number = 2) => {
+  const { handleError } = useErrorHandler();
+  const { isOnline } = useNetworkStatus();
+  
   return useQuery({
     queryKey: [...blogQueryKeys.featured(), limit],
-    queryFn: () => BlogService.getFeaturedPosts(limit),
+    queryFn: async () => {
+      try {
+        return await BlogService.getFeaturedPosts(limit);
+      } catch (error) {
+        const appError = handleNetworkError(error);
+        handleError(appError, 'FeaturedPosts fetch');
+        throw error;
+      }
+    },
     staleTime: 15 * 60 * 1000, // 15 minutes
+    enabled: isOnline,
+    retry: 2,
   });
 };
 
-// Hook for fetching categories
+// Enhanced hook for fetching categories
 export const useBlogCategories = () => {
+  const { handleError } = useErrorHandler();
+  const { isOnline } = useNetworkStatus();
+  
   return useQuery({
     queryKey: blogQueryKeys.categories(),
-    queryFn: () => BlogService.getCategories(),
+    queryFn: async () => {
+      try {
+        return await BlogService.getCategories();
+      } catch (error) {
+        const appError = handleNetworkError(error);
+        handleError(appError, 'Categories fetch');
+        throw error;
+      }
+    },
     staleTime: 30 * 60 * 1000, // 30 minutes
+    enabled: isOnline,
   });
 };
 
-// Hook for searching posts
+// Enhanced hook for searching posts
 export const useSearchPosts = (query: string) => {
+  const { handleError } = useErrorHandler();
+  const { isOnline } = useNetworkStatus();
+  
   return useQuery({
     queryKey: blogQueryKeys.search(query),
-    queryFn: () => BlogService.searchPosts(query),
-    enabled: query.length > 2,
+    queryFn: async () => {
+      try {
+        return await BlogService.searchPosts(query);
+      } catch (error) {
+        const appError = handleNetworkError(error);
+        handleError(appError, 'Search fetch');
+        throw error;
+      }
+    },
+    enabled: query.length > 2 && isOnline,
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 };
