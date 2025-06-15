@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { SecurityProvider } from "@/contexts/SecurityContext";
 import NoScriptFallback from "@/components/NoScriptFallback";
+import PerformanceMonitor from "@/components/PerformanceMonitor";
 import Index from "./pages/Index";
 import AllProjects from "./pages/AllProjects";
 import AllBlogPosts from "./pages/AllBlogPosts";
@@ -51,6 +52,7 @@ const App = () => (
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </BrowserRouter>
+              <PerformanceMonitor />
             </TooltipProvider>
           </ThemeProvider>
         </SecurityProvider>

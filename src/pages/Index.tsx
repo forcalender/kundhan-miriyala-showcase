@@ -14,8 +14,15 @@ import ParticleBackground from "@/components/ParticleBackground";
 import SkipNavigation from "@/components/SkipNavigation";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import SEO from "@/components/SEO";
+import { usePerformanceMonitoring } from "@/hooks/usePerformanceMonitoring";
+import { useAnalytics } from "@/hooks/useAnalytics";
+import { useTechnicalDebtMonitor } from "@/hooks/useTechnicalDebtMonitor";
 
 const Index = () => {
+  const { trackCustomEvent } = usePerformanceMonitoring();
+  const { trackUserInteraction } = useAnalytics();
+  const { getDebtSummary } = useTechnicalDebtMonitor();
+
   useEffect(() => {
     // Add smooth scrolling behavior
     document.documentElement.style.scrollBehavior = 'smooth';
@@ -32,12 +39,37 @@ const Index = () => {
       }
     };
 
+    // Track page interactions
+    const handleClick = (event: Event) => {
+      const target = event.target as HTMLElement;
+      if (target.tagName === 'BUTTON' || target.tagName === 'A') {
+        trackUserInteraction('click', target.tagName.toLowerCase(), 1);
+      }
+    };
+
     window.addEventListener('scroll', handleScroll);
+    document.addEventListener('click', handleClick);
+
+    // Track page load completion
+    trackCustomEvent('page_loaded', {
+      page: 'home',
+      timestamp: Date.now()
+    });
+
+    // Log technical debt summary in development
+    if (process.env.NODE_ENV === 'development') {
+      setTimeout(() => {
+        const debtSummary = getDebtSummary();
+        console.log('Technical Debt Summary:', debtSummary);
+      }, 3000);
+    }
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('click', handleClick);
       document.documentElement.style.scrollBehavior = 'auto';
     };
-  }, []);
+  }, [trackCustomEvent, trackUserInteraction, getDebtSummary]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden relative">
