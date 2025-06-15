@@ -1,7 +1,8 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { useIntersectionObserver } from "@/hooks/useScrollAnimation";
 import { useLoading } from "@/hooks/useLoading";
+import { useEnhancedProjectFilters } from "@/hooks/useEnhancedProjectFilters";
 import ProjectHeader from "./projects/ProjectHeader";
 import ProjectFilters from "./projects/ProjectFilters";
 import ProjectCard from "./projects/ProjectCard";
@@ -49,18 +50,22 @@ const featuredProjects = [
 const Projects = () => {
   const [setRef, isVisible] = useIntersectionObserver(0.1);
   const { isLoading } = useLoading({ initialDelay: 300, minDuration: 1000 });
-  const [hoveredProject, setHoveredProject] = useState<number | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [playingDemo, setPlayingDemo] = useState<number | null>(null);
 
   const categories = ["all", "AI/ML", "Web Development", "Data Science"];
   
-  const filteredProjects = featuredProjects.filter(project => {
-    if (selectedCategory === "all") return true;
-    if (selectedCategory === "AI/ML") return project.tags.includes("AI") || project.tags.includes("NLP") || project.tags.includes("TensorFlow");
-    if (selectedCategory === "Web Development") return project.tags.includes("React") || project.tags.includes("TypeScript");
-    if (selectedCategory === "Data Science") return project.tags.includes("Analytics") || project.tags.includes("Python");
-    return true;
+  // Use enhanced project filters with URL state
+  const {
+    selectedCategory,
+    filteredProjects,
+    hoveredProject,
+    playingDemo,
+    handleCategoryChange,
+    setHoveredProject,
+    setPlayingDemo,
+    activeProjectsCount
+  } = useEnhancedProjectFilters({ 
+    projects: featuredProjects, 
+    categories 
   });
 
   return (
@@ -82,9 +87,19 @@ const Projects = () => {
           <ProjectFilters 
             categories={categories}
             selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
+            onCategoryChange={handleCategoryChange}
             isVisible={isVisible}
           />
+
+          {/* Show project count */}
+          {isVisible && (
+            <div className="text-center mb-8">
+              <p className="text-muted-foreground">
+                Showing {activeProjectsCount} project{activeProjectsCount !== 1 ? 's' : ''}
+                {selectedCategory !== 'all' && ` in ${selectedCategory}`}
+              </p>
+            </div>
+          )}
 
           {isLoading ? (
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">

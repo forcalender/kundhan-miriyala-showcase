@@ -1,52 +1,29 @@
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useIntersectionObserver } from "@/hooks/useScrollAnimation";
-import { useBlogPosts, useBlogCategories } from "@/hooks/useBlogData";
-import { usePagination } from "@/hooks/usePagination";
+import { useEnhancedBlogFilters } from "@/hooks/useEnhancedBlogFilters";
 import BlogPostsContainer from "@/components/blog/BlogPostsContainer";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { Button } from "@/components/ui/button";
 
 const AllBlogPosts = () => {
   const [setRef, isVisible] = useIntersectionObserver(0.1);
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [currentPage, setCurrentPage] = useState(1);
   
-  // Fetch categories
-  const { data: categories = [] } = useBlogCategories();
-  
-  // Fetch blog posts with current filters
-  const { 
-    data: blogData, 
-    isLoading, 
-    error 
-  } = useBlogPosts({
-    page: currentPage,
-    limit: 4,
-    category: selectedCategory
-  });
-
-  // Set up pagination
-  const [paginationState, paginationActions] = usePagination({
-    totalItems: blogData?.totalCount || 0,
-    initialPage: currentPage,
-    initialItemsPerPage: 4,
-    onPageChange: setCurrentPage
-  });
-
-  // Handle category change
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
-    setCurrentPage(1);
-    paginationActions.goToFirstPage();
-  };
-
-  // Handle page change
-  const handlePageChange = (page: number) => {
-    paginationActions.goToPage(page);
-  };
+  // Use enhanced blog filters with URL state
+  const {
+    selectedCategory,
+    categories,
+    filteredPosts,
+    paginationData,
+    handleCategoryChange,
+    handlePageChange,
+    isLoading,
+    error,
+    hasFilters,
+    clearFilters
+  } = useEnhancedBlogFilters({ postsPerPage: 4 });
 
   const handleReadMore = (post: any) => {
     console.log("Read more clicked for:", post.title);
@@ -81,6 +58,21 @@ const AllBlogPosts = () => {
             </Link>
             <div className="h-6 w-px bg-border" />
             <h1 className="text-2xl font-bold text-primary">All Blog Posts</h1>
+            
+            {/* Clear filters button */}
+            {hasFilters && (
+              <>
+                <div className="h-6 w-px bg-border" />
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={clearFilters}
+                  className="text-xs"
+                >
+                  Clear Filters
+                </Button>
+              </>
+            )}
           </div>
         </div>
 
@@ -89,13 +81,13 @@ const AllBlogPosts = () => {
             categories={categories}
             selectedCategory={selectedCategory}
             onCategoryChange={handleCategoryChange}
-            posts={blogData?.posts || []}
+            posts={filteredPosts}
             isLoading={isLoading}
             isVisible={isVisible}
-            currentPage={paginationState.currentPage}
-            totalPages={paginationState.totalPages}
-            hasNextPage={paginationState.hasNextPage}
-            hasPrevPage={paginationState.hasPrevPage}
+            currentPage={paginationData.currentPage}
+            totalPages={paginationData.totalPages}
+            hasNextPage={paginationData.hasNextPage}
+            hasPrevPage={paginationData.hasPrevPage}
             onPageChange={handlePageChange}
             onReadMore={handleReadMore}
           />
