@@ -3,9 +3,12 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useIntersectionObserver } from "@/hooks/useScrollAnimation";
+import { useLoading } from "@/hooks/useLoading";
 import BlogHeader from "@/components/blog/BlogHeader";
 import BlogFilters from "@/components/blog/BlogFilters";
 import BlogCard from "@/components/blog/BlogCard";
+import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import { Button } from "@/components/ui/button";
 import {
   Pagination,
@@ -89,6 +92,7 @@ const POSTS_PER_PAGE = 4;
 
 const AllBlogPosts = () => {
   const [setRef, isVisible] = useIntersectionObserver(0.1);
+  const { isLoading } = useLoading({ initialDelay: 200, minDuration: 600 });
   const [hoveredPost, setHoveredPost] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState(1);
@@ -114,95 +118,103 @@ const AllBlogPosts = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header with back button */}
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-4">
-          <Link to="/#blog">
-            <Button variant="ghost" size="sm" className="gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Back to Home
-            </Button>
-          </Link>
-          <div className="h-6 w-px bg-border" />
-          <h1 className="text-2xl font-bold text-primary">All Blog Posts</h1>
-        </div>
-      </div>
-
-      <section className="py-20 px-4 max-w-6xl mx-auto relative" ref={setRef}>
-        {/* Background effects */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-r from-purple-400/20 to-pink-400/20 rounded-full blur-xl animate-pulse" />
-          <div className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-gradient-to-r from-blue-400/20 to-cyan-400/20 rounded-full blur-xl animate-bounce" />
+    <ErrorBoundary componentName="All Blog Posts">
+      <div className="min-h-screen bg-background">
+        {/* Header with back button */}
+        <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b">
+          <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-4">
+            <Link to="/#blog">
+              <Button variant="ghost" size="sm" className="gap-2">
+                <ArrowLeft className="w-4 h-4" />
+                Back to Home
+              </Button>
+            </Link>
+            <div className="h-6 w-px bg-border" />
+            <h1 className="text-2xl font-bold text-primary">All Blog Posts</h1>
+          </div>
         </div>
 
-        <div className="relative z-10">
-          <div className="text-center mb-16">
-            <h2 className={`text-4xl md:text-5xl font-bold mb-4 font-playfair text-primary transition-all duration-700 ${isVisible ? 'animate-scale-in' : 'opacity-0 translate-y-10'}`}>
-              All Blog Posts
-            </h2>
-            <div className={`w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto mb-6 rounded-full transition-all duration-700 delay-200 ${isVisible ? 'animate-slide-in-right' : 'opacity-0 scale-x-0'}`} />
-            <p className={`text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-8 transition-all duration-700 delay-300 ${isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-5'}`}>
-              Explore all our insights on technology, design, and digital experiences
-            </p>
+        <section className="py-20 px-4 max-w-6xl mx-auto relative" ref={setRef}>
+          {/* Background effects */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-r from-purple-400/20 to-pink-400/20 rounded-full blur-xl animate-pulse" />
+            <div className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-gradient-to-r from-blue-400/20 to-cyan-400/20 rounded-full blur-xl animate-bounce" />
           </div>
 
-          <BlogFilters 
-            categories={categories}
-            selectedCategory={selectedCategory}
-            onCategoryChange={handleCategoryChange}
-            isVisible={isVisible}
-          />
-
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-2 mb-12">
-            {paginatedPosts.map((post, index) => (
-              <BlogCard
-                key={post.id}
-                post={post}
-                index={index}
-                isVisible={isVisible}
-                hoveredPost={hoveredPost}
-                onHover={setHoveredPost}
-                onReadMore={handleReadMore}
-              />
-            ))}
-          </div>
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className={`flex justify-center transition-all duration-700 delay-600 ${isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-5'}`}>
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious 
-                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                      className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                    />
-                  </PaginationItem>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <PaginationItem key={page}>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(page)}
-                        isActive={currentPage === page}
-                        className="cursor-pointer"
-                      >
-                        {page}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
-                  <PaginationItem>
-                    <PaginationNext 
-                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                      className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+          <div className="relative z-10">
+            <div className="text-center mb-16">
+              <h2 className={`text-4xl md:text-5xl font-bold mb-4 font-playfair text-primary transition-all duration-700 ${isVisible ? 'animate-scale-in' : 'opacity-0 translate-y-10'}`}>
+                All Blog Posts
+              </h2>
+              <div className={`w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto mb-6 rounded-full transition-all duration-700 delay-200 ${isVisible ? 'animate-slide-in-right' : 'opacity-0 scale-x-0'}`} />
+              <p className={`text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-8 transition-all duration-700 delay-300 ${isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-5'}`}>
+                Explore all our insights on technology, design, and digital experiences
+              </p>
             </div>
-          )}
-        </div>
-      </section>
-    </div>
+
+            <BlogFilters 
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onCategoryChange={handleCategoryChange}
+              isVisible={isVisible}
+            />
+
+            {isLoading ? (
+              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-2 mb-12">
+                <LoadingSkeleton type="blog" count={4} />
+              </div>
+            ) : (
+              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-2 mb-12">
+                {paginatedPosts.map((post, index) => (
+                  <BlogCard
+                    key={post.id}
+                    post={post}
+                    index={index}
+                    isVisible={isVisible}
+                    hoveredPost={hoveredPost}
+                    onHover={setHoveredPost}
+                    onReadMore={handleReadMore}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Pagination */}
+            {totalPages > 1 && !isLoading && (
+              <div className={`flex justify-center transition-all duration-700 delay-600 ${isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-5'}`}>
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                        className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                      />
+                    </PaginationItem>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage(page)}
+                          isActive={currentPage === page}
+                          className="cursor-pointer"
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext 
+                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                        className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
+    </ErrorBoundary>
   );
 };
 

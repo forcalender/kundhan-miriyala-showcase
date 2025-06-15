@@ -12,6 +12,7 @@ import Blog from "@/components/Blog";
 import Contact from "@/components/Contact";
 import ParticleBackground from "@/components/ParticleBackground";
 import SkipNavigation from "@/components/SkipNavigation";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const Index = () => {
   useEffect(() => {
@@ -40,23 +41,53 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden relative">
       <SkipNavigation />
-      <ParticleBackground />
-      <Navbar />
+      
+      <ErrorBoundary componentName="Particle Background">
+        <ParticleBackground />
+      </ErrorBoundary>
+      
+      <ErrorBoundary componentName="Navigation">
+        <Navbar />
+      </ErrorBoundary>
+      
       <main 
         id="main-content"
         className="flex-1 flex flex-col justify-start items-center relative z-10"
         role="main"
       >
-        <Hero />
-        <About />
-        <Stats />
+        <ErrorBoundary componentName="Hero Section">
+          <Hero />
+        </ErrorBoundary>
+        
+        <ErrorBoundary componentName="About Section">
+          <About />
+        </ErrorBoundary>
+        
+        <ErrorBoundary componentName="Stats Section">
+          <Stats />
+        </ErrorBoundary>
+        
         <Projects />
-        <Skills />
-        <Experience />
-        <Testimonials />
+        
+        <ErrorBoundary componentName="Skills Section">
+          <Skills />
+        </ErrorBoundary>
+        
+        <ErrorBoundary componentName="Experience Section">
+          <Experience />
+        </ErrorBoundary>
+        
+        <ErrorBoundary componentName="Testimonials Section">
+          <Testimonials />
+        </ErrorBoundary>
+        
         <Blog />
-        <Contact />
+        
+        <ErrorBoundary componentName="Contact Section">
+          <Contact />
+        </ErrorBoundary>
       </main>
+      
       <footer 
         className="py-6 text-center text-muted-foreground border-t bg-background/95 backdrop-blur font-light tracking-wide relative z-10"
         role="contentinfo"

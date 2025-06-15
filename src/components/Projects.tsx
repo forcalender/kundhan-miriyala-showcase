@@ -1,10 +1,13 @@
 
 import React, { useState } from "react";
 import { useIntersectionObserver } from "@/hooks/useScrollAnimation";
+import { useLoading } from "@/hooks/useLoading";
 import ProjectHeader from "./projects/ProjectHeader";
 import ProjectFilters from "./projects/ProjectFilters";
 import ProjectCard from "./projects/ProjectCard";
 import ProjectCallToAction from "./projects/ProjectCallToAction";
+import LoadingSkeleton from "@/components/ui/LoadingSkeleton";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 // Only showing featured projects here
 const featuredProjects = [
@@ -45,6 +48,7 @@ const featuredProjects = [
 
 const Projects = () => {
   const [setRef, isVisible] = useIntersectionObserver(0.1);
+  const { isLoading } = useLoading({ initialDelay: 300, minDuration: 1000 });
   const [hoveredProject, setHoveredProject] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [playingDemo, setPlayingDemo] = useState<number | null>(null);
@@ -60,45 +64,53 @@ const Projects = () => {
   });
 
   return (
-    <section 
-      id="projects" 
-      className="py-20 px-4 max-w-6xl mx-auto relative"
-      ref={setRef}
-    >
-      {/* Background effects */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-r from-primary/10 to-accent/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-accent/10 to-primary/10 rounded-full blur-3xl animate-bounce" />
-      </div>
-
-      <div className="relative z-10">
-        <ProjectHeader isVisible={isVisible} />
-
-        <ProjectFilters 
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
-          isVisible={isVisible}
-        />
-
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {filteredProjects.map((proj, index) => (
-            <ProjectCard
-              key={proj.title}
-              project={proj}
-              index={index}
-              isVisible={isVisible}
-              hoveredProject={hoveredProject}
-              playingDemo={playingDemo}
-              onHover={setHoveredProject}
-              onDemoToggle={setPlayingDemo}
-            />
-          ))}
+    <ErrorBoundary componentName="Projects">
+      <section 
+        id="projects" 
+        className="py-20 px-4 max-w-6xl mx-auto relative"
+        ref={setRef}
+      >
+        {/* Background effects */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-r from-primary/10 to-accent/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-accent/10 to-primary/10 rounded-full blur-3xl animate-bounce" />
         </div>
 
-        <ProjectCallToAction isVisible={isVisible} />
-      </div>
-    </section>
+        <div className="relative z-10">
+          <ProjectHeader isVisible={isVisible} />
+
+          <ProjectFilters 
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+            isVisible={isVisible}
+          />
+
+          {isLoading ? (
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              <LoadingSkeleton type="project" count={3} />
+            </div>
+          ) : (
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {filteredProjects.map((proj, index) => (
+                <ProjectCard
+                  key={proj.title}
+                  project={proj}
+                  index={index}
+                  isVisible={isVisible}
+                  hoveredProject={hoveredProject}
+                  playingDemo={playingDemo}
+                  onHover={setHoveredProject}
+                  onDemoToggle={setPlayingDemo}
+                />
+              ))}
+            </div>
+          )}
+
+          <ProjectCallToAction isVisible={isVisible} />
+        </div>
+      </section>
+    </ErrorBoundary>
   );
 };
 
