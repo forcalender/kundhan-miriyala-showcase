@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Calendar, Clock, ArrowRight } from "lucide-react";
+import { Calendar, Clock, ArrowRight, Star } from "lucide-react";
 
 interface BlogPost {
   id: number;
@@ -13,6 +13,7 @@ interface BlogPost {
   content?: string;
   author?: string;
   tags?: string[];
+  featured?: boolean;
 }
 
 interface BlogCardProps {
@@ -48,6 +49,14 @@ const BlogCard = ({
     >
       {/* Gradient border effect */}
       <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${post.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-300 -z-10`} />
+
+      {/* Featured Badge */}
+      {post.featured && (
+        <div className="absolute top-4 right-4 flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xs font-semibold rounded-full shadow-lg">
+          <Star className="w-3 h-3 fill-current" />
+          Featured
+        </div>
+      )}
 
       {/* Category Badge */}
       <div className={`inline-block px-3 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r ${post.gradient} mb-4 animate-pulse`}>

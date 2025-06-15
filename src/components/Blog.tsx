@@ -15,7 +15,8 @@ const blogPosts = [
     readTime: "5 min read",
     category: "AI/ML",
     gradient: "from-purple-400 to-pink-400",
-    tags: ["AI", "Machine Learning", "Web Development", "React"]
+    tags: ["AI", "Machine Learning", "Web Development", "React"],
+    featured: true
   },
   {
     id: 2,
@@ -25,7 +26,8 @@ const blogPosts = [
     readTime: "7 min read",
     category: "Design",
     gradient: "from-blue-400 to-cyan-400",
-    tags: ["Accessibility", "UX Design", "Inclusive Design"]
+    tags: ["Accessibility", "UX Design", "Inclusive Design"],
+    featured: true
   },
   {
     id: 3,
@@ -35,7 +37,8 @@ const blogPosts = [
     readTime: "6 min read",
     category: "Development",
     gradient: "from-green-400 to-emerald-400",
-    tags: ["React", "Performance", "Optimization", "JavaScript"]
+    tags: ["React", "Performance", "Optimization", "JavaScript"],
+    featured: false
   },
   {
     id: 4,
@@ -45,7 +48,8 @@ const blogPosts = [
     readTime: "8 min read",
     category: "Data Science",
     gradient: "from-orange-400 to-red-400",
-    tags: ["Data Science", "Analytics", "Python", "Business Intelligence"]
+    tags: ["Data Science", "Analytics", "Python", "Business Intelligence"],
+    featured: false
   }
 ];
 
@@ -56,7 +60,10 @@ const Blog = () => {
 
   const categories = ["all", "AI/ML", "Design", "Development", "Data Science"];
   
-  const filteredPosts = blogPosts.filter(post => {
+  // Filter for featured posts only
+  const featuredPosts = blogPosts.filter(post => post.featured);
+  
+  const filteredPosts = featuredPosts.filter(post => {
     if (selectedCategory === "all") return true;
     return post.category === selectedCategory;
   });
