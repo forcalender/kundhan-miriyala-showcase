@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Calendar, Clock, ArrowRight, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface BlogPost {
   id: number;
@@ -33,6 +34,23 @@ const BlogCard = ({
   onHover,
   onReadMore
 }: BlogCardProps) => {
+  const navigate = useNavigate();
+
+  const handleReadMore = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate(`/blog/${post.id}`);
+    if (onReadMore) {
+      onReadMore(post);
+    }
+  };
+
+  const handleCardClick = () => {
+    navigate(`/blog/${post.id}`);
+    if (onReadMore) {
+      onReadMore(post);
+    }
+  };
+
   return (
     <article
       className={`group bg-white/60 dark:bg-card/70 rounded-2xl p-6 border border-primary/10 shadow-lg backdrop-blur-md hover:shadow-2xl transition-all duration-500 cursor-pointer ${
@@ -45,7 +63,7 @@ const BlogCard = ({
       }}
       onMouseEnter={() => onHover(index)}
       onMouseLeave={() => onHover(null)}
-      onClick={() => onReadMore && onReadMore(post)}
+      onClick={handleCardClick}
     >
       {/* Gradient border effect */}
       <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${post.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-300 -z-10`} />
@@ -104,7 +122,10 @@ const BlogCard = ({
       {/* Read More Button */}
       <div className="flex items-center justify-between">
         <div className={`w-full h-px bg-gradient-to-r ${post.gradient} opacity-20 group-hover:opacity-60 transition-opacity duration-200`} />
-        <button className="flex items-center gap-2 text-primary hover:text-accent transition-colors duration-200 font-medium whitespace-nowrap ml-4 group-hover:translate-x-1 transform transition-transform">
+        <button 
+          onClick={handleReadMore}
+          className="flex items-center gap-2 text-primary hover:text-accent transition-colors duration-200 font-medium whitespace-nowrap ml-4 group-hover:translate-x-1 transform transition-transform"
+        >
           Read More
           <ArrowRight className="w-4 h-4" />
         </button>
