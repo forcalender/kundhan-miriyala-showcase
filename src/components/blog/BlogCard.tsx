@@ -1,7 +1,7 @@
-
 import React from "react";
 import { Calendar, Clock, ArrowRight, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { calculateReadTime } from "@/utils/readTimeCalculator";
 
 interface BlogPost {
   id: number;
@@ -35,6 +35,9 @@ const BlogCard = ({
   onReadMore
 }: BlogCardProps) => {
   const navigate = useNavigate();
+
+  // Calculate read time if content is available, otherwise use provided readTime
+  const displayReadTime = post.content ? calculateReadTime(post.content) : post.readTime;
 
   const handleReadMore = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -91,7 +94,7 @@ const BlogCard = ({
         {post.excerpt}
       </p>
 
-      {/* Meta Information */}
+      {/* Meta Information with calculated read time */}
       <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1">
@@ -100,7 +103,7 @@ const BlogCard = ({
           </div>
           <div className="flex items-center gap-1">
             <Clock className="w-3 h-3" />
-            <span>{post.readTime}</span>
+            <span>{displayReadTime}</span>
           </div>
         </div>
       </div>

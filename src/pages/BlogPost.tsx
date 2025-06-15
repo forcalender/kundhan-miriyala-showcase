@@ -1,9 +1,14 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
+import { useIntersectionObserver } from "@/hooks/useScrollAnimation";
+import { calculateReadTime } from "@/utils/readTimeCalculator";
+import SEO from "@/components/SEO";
+import BlogBreadcrumb from "@/components/blog/BlogBreadcrumb";
+import BlogPostHeader from "@/components/blog/BlogPostHeader";
+import BlogPostContent from "@/components/blog/BlogPostContent";
+import BlogPostNavigation from "@/components/blog/BlogPostNavigation";
 import { ArrowLeft, Calendar, Clock, User, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useIntersectionObserver } from "@/hooks/useScrollAnimation";
-import SEO from "@/components/SEO";
 
 const blogPostsData = [
   {
@@ -380,16 +385,14 @@ const BlogPost = () => {
         <div className="text-center">
           <h1 className="text-4xl font-bold text-primary mb-4">Post Not Found</h1>
           <p className="text-muted-foreground mb-8">The blog post you're looking for doesn't exist.</p>
-          <Link to="/blog">
-            <Button className="gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Back to Blog
-            </Button>
-          </Link>
+          <BlogPostNavigation isVisible={true} />
         </div>
       </div>
     );
   }
+
+  // Calculate accurate read time from content
+  const calculatedReadTime = calculateReadTime(post.content || '');
 
   // Convert date to ISO format for structured data
   const convertToISODate = (dateString: string) => {
@@ -403,14 +406,20 @@ const BlogPost = () => {
     return `${year}-${monthNum}-${day.padStart(2, '0')}T10:00:00Z`;
   };
 
+  // Create post object with calculated read time
+  const enrichedPost = {
+    ...post,
+    readTime: calculatedReadTime
+  };
+
   const blogPostSEO = {
     title: post.title,
     description: post.excerpt,
-    author: post.author || "Kyle Morris",
+    author: post.author || "Kundhan Miriyala",
     publishedTime: convertToISODate(post.date),
     tags: post.tags || [],
     category: post.category,
-    readTime: post.readTime,
+    readTime: calculatedReadTime,
     url: `https://kundhan-miriyala.com/blog/${post.id}`
   };
 
@@ -424,84 +433,18 @@ const BlogPost = () => {
         blogPost={blogPostSEO}
       />
       
-      {/* Header with back button */}
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
-          <Link to="/blog">
-            <Button variant="ghost" size="sm" className="gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Back to Blog
-            </Button>
-          </Link>
-        </div>
-      </div>
+      <BlogPostNavigation isVisible={isVisible} />
 
       <article className="max-w-4xl mx-auto px-4 py-12" ref={setRef}>
-        {/* Hero Section */}
-        <div className={`text-center mb-12 transition-all duration-700 ${isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-10'}`}>
-          {/* Category Badge */}
-          <div className={`inline-block px-4 py-2 rounded-full text-sm font-semibold text-white bg-gradient-to-r ${post.gradient} mb-6`}>
-            {post.category}
-          </div>
+        <BlogBreadcrumb postTitle={post.title} />
+        
+        <BlogPostHeader post={enrichedPost} isVisible={isVisible} />
+        
+        {post.content && (
+          <BlogPostContent content={post.content} isVisible={isVisible} />
+        )}
 
-          {/* Title */}
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 font-playfair text-primary leading-tight">
-            {post.title}
-          </h1>
-
-          {/* Meta Information */}
-          <div className="flex flex-wrap items-center justify-center gap-6 text-muted-foreground mb-8">
-            <div className="flex items-center gap-2">
-              <User className="w-4 h-4" />
-              <span>{post.author}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
-              <span>{post.date}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              <span>{post.readTime}</span>
-            </div>
-          </div>
-
-          {/* Tags */}
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
-            {post.tags?.map((tag) => (
-              <span
-                key={tag}
-                className="inline-flex items-center gap-1 bg-primary/10 text-primary px-3 py-1 text-sm rounded-full font-medium"
-              >
-                <Tag className="w-3 h-3" />
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          {/* Excerpt */}
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            {post.excerpt}
-          </p>
-        </div>
-
-        {/* Content */}
-        <div 
-          className={`prose prose-lg max-w-none transition-all duration-700 delay-300 ${isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-5'}`}
-          dangerouslySetInnerHTML={{ __html: post.content }}
-          style={{
-            color: 'hsl(var(--foreground))',
-          }}
-        />
-
-        {/* Back to Blog CTA */}
-        <div className={`text-center mt-16 pt-12 border-t border-border transition-all duration-700 delay-500 ${isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-5'}`}>
-          <Link to="/blog">
-            <Button className="gap-2 bg-gradient-to-r from-primary to-accent text-white hover:shadow-lg hover:scale-105 transition-all duration-300">
-              <ArrowLeft className="w-4 h-4" />
-              Read More Posts
-            </Button>
-          </Link>
-        </div>
+        <BlogPostNavigation isVisible={isVisible} />
       </article>
     </div>
   );
