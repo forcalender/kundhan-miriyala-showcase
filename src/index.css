@@ -98,6 +98,51 @@
   html {
     scroll-behavior: smooth;
   }
+
+  /* Screen reader only class */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .focus\:not-sr-only:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+
+  /* Improved focus indicators */
+  *:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    :root {
+      --primary: 0 0% 0%;
+      --primary-foreground: 0 0% 100%;
+      --muted-foreground: 0 0% 20%;
+    }
+    
+    .dark {
+      --primary: 0 0% 100%;
+      --primary-foreground: 0 0% 0%;
+      --muted-foreground: 0 0% 80%;
+    }
+  }
 }
 
 @layer utilities {

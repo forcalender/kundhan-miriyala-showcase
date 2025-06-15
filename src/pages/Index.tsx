@@ -11,6 +11,7 @@ import Testimonials from "@/components/Testimonials";
 import Blog from "@/components/Blog";
 import Contact from "@/components/Contact";
 import ParticleBackground from "@/components/ParticleBackground";
+import SkipNavigation from "@/components/SkipNavigation";
 
 const Index = () => {
   useEffect(() => {
@@ -38,9 +39,14 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden relative">
+      <SkipNavigation />
       <ParticleBackground />
       <Navbar />
-      <main className="flex-1 flex flex-col justify-start items-center relative z-10">
+      <main 
+        id="main-content"
+        className="flex-1 flex flex-col justify-start items-center relative z-10"
+        role="main"
+      >
         <Hero />
         <About />
         <Stats />
@@ -51,7 +57,10 @@ const Index = () => {
         <Blog />
         <Contact />
       </main>
-      <footer className="py-6 text-center text-muted-foreground border-t bg-background/95 backdrop-blur font-light tracking-wide relative z-10">
+      <footer 
+        className="py-6 text-center text-muted-foreground border-t bg-background/95 backdrop-blur font-light tracking-wide relative z-10"
+        role="contentinfo"
+      >
         &copy; {new Date().getFullYear()} Kundhan Miriyala • All Rights Reserved
       </footer>
     </div>
