@@ -19,16 +19,16 @@ const Navbar = () => {
 
   return (
     <nav 
-      className="w-full flex justify-between items-center py-4 px-6 bg-background/90 border-b sticky top-0 z-50 backdrop-blur-md animate-fade-in"
+      className="w-full flex justify-between items-center py-3 md:py-4 px-4 md:px-6 bg-background/90 border-b sticky top-0 z-50 backdrop-blur-md animate-fade-in"
       role="navigation"
       aria-label="Main navigation"
     >
       <Link 
         to="/" 
-        className="flex items-center gap-2 animate-scale-in"
+        className="flex items-center gap-2 animate-scale-in p-2 rounded-lg hover:bg-accent/10 transition-colors min-h-[44px] min-w-[44px] justify-center md:justify-start"
         aria-label="Kundhan Miriyala - Home"
       >
-        <span className="text-2xl font-extrabold font-playfair tracking-tight text-primary hover:text-accent transition-colors duration-300">
+        <span className="text-xl md:text-2xl font-extrabold font-playfair tracking-tight text-primary hover:text-accent transition-colors duration-300">
           KM
         </span>
       </Link>
@@ -40,7 +40,7 @@ const Navbar = () => {
             <a
               key={link.label}
               href={location.pathname === '/' ? link.href : `/${link.href}`}
-              className="text-muted-foreground hover:text-primary font-medium transition-all duration-300 px-1 py-0.5 relative group animate-fade-in focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded"
+              className="text-muted-foreground hover:text-primary font-medium transition-all duration-300 px-3 py-2 relative group animate-fade-in focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded min-h-[44px] flex items-center"
               style={{ animationDelay: `${index * 0.1}s` }}
               role="menuitem"
               aria-label={`Navigate to ${link.label} section`}
@@ -51,7 +51,7 @@ const Navbar = () => {
           ))}
           <Link
             to="/blog"
-            className="text-muted-foreground hover:text-primary font-medium transition-all duration-300 px-1 py-0.5 relative group animate-fade-in focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded"
+            className="text-muted-foreground hover:text-primary font-medium transition-all duration-300 px-3 py-2 relative group animate-fade-in focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded min-h-[44px] flex items-center"
             style={{ animationDelay: `${navLinks.length * 0.1}s` }}
             role="menuitem"
             aria-label="View all blog posts"
@@ -73,14 +73,14 @@ const Navbar = () => {
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
           onClick={() => setMenuOpen((o) => !o)}
-          className="animate-scale-in hover:scale-110 transition-transform duration-200"
+          className="animate-scale-in hover:scale-110 transition-transform duration-200 min-h-[44px] min-w-[44px]"
         >
           <Menu aria-hidden="true" />
         </Button>
         {menuOpen && (
           <div 
             id="mobile-menu"
-            className="absolute top-16 right-6 bg-background/95 backdrop-blur-md rounded-md shadow-2xl flex flex-col p-4 gap-2 z-50 border animate-fade-in"
+            className="absolute top-16 right-4 left-4 md:left-auto md:right-6 md:w-64 bg-background/95 backdrop-blur-md rounded-md shadow-2xl flex flex-col p-4 gap-1 z-50 border animate-fade-in"
             role="menu"
             aria-label="Mobile navigation menu"
           >
@@ -88,7 +88,7 @@ const Navbar = () => {
               <a
                 key={link.label}
                 href={location.pathname === '/' ? link.href : `/${link.href}`}
-                className="text-muted-foreground hover:text-primary font-medium transition-colors px-2 py-1 rounded hover:bg-accent/10 animate-fade-in focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                className="text-muted-foreground hover:text-primary font-medium transition-colors px-4 py-3 rounded hover:bg-accent/10 animate-fade-in focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 min-h-[48px] flex items-center"
                 style={{ animationDelay: `${index * 0.05}s` }}
                 onClick={() => setMenuOpen(false)}
                 role="menuitem"
@@ -99,7 +99,7 @@ const Navbar = () => {
             ))}
             <Link
               to="/blog"
-              className="text-muted-foreground hover:text-primary font-medium transition-colors px-2 py-1 rounded hover:bg-accent/10 animate-fade-in focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              className="text-muted-foreground hover:text-primary font-medium transition-colors px-4 py-3 rounded hover:bg-accent/10 animate-fade-in focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 min-h-[48px] flex items-center"
               style={{ animationDelay: `${navLinks.length * 0.05}s` }}
               onClick={() => setMenuOpen(false)}
               role="menuitem"

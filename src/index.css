@@ -99,6 +99,25 @@
     scroll-behavior: smooth;
   }
 
+  /* Mobile-specific optimizations */
+  @media (max-width: 768px) {
+    html {
+      /* Improve text rendering on mobile */
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+    
+    /* Reduce motion for users who prefer it */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  }
+
   /* Screen reader only class */
   .sr-only {
     position: absolute;
@@ -123,10 +142,18 @@
     white-space: normal;
   }
 
-  /* Improved focus indicators */
+  /* Enhanced focus indicators with larger targets on mobile */
   *:focus-visible {
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
+  }
+
+  /* Ensure touch targets are at least 44px on mobile */
+  @media (max-width: 768px) {
+    button, a, input, select, textarea {
+      min-height: 44px;
+      min-width: 44px;
+    }
   }
 
   /* High contrast mode support */
@@ -166,6 +193,7 @@
     background-clip: text;
   }
   
+  /* Mobile-optimized animations */
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }
@@ -173,11 +201,30 @@
   .animate-pulse-slow {
     animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
+
+  /* Reduce motion intensity on mobile */
+  @media (max-width: 768px) {
+    .animate-float {
+      animation: float 8s ease-in-out infinite;
+    }
+    
+    .animate-pulse-slow {
+      animation: pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  }
 }
 
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-20px); }
+}
+
+/* Reduced intensity float for mobile */
+@media (max-width: 768px) {
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
 }
 
 @keyframes shimmer {

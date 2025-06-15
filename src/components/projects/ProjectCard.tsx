@@ -49,15 +49,19 @@ const ProjectCard = ({
     onDemoToggle(null);
   };
 
+  // Check for reduced motion preference
+  const prefersReducedMotion = typeof window !== 'undefined' && 
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   return (
     <>
       <article
         className={`group relative bg-white/60 dark:bg-card/70 rounded-2xl overflow-hidden border border-primary/10 shadow-lg backdrop-blur-md transition-all duration-500 cursor-pointer ${
           isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-10'
-        } hover:scale-105 hover:shadow-2xl hover:border-accent/50 hover:bg-white/80 dark:hover:bg-card/90`}
+        } ${prefersReducedMotion ? '' : 'hover:scale-105'} hover:shadow-2xl hover:border-accent/50 hover:bg-white/80 dark:hover:bg-card/90`}
         style={{ 
           animationDelay: `${index * 0.2}s`,
-          transform: hoveredProject === index ? 'translateY(-10px) scale(1.05)' : undefined,
+          transform: !prefersReducedMotion && hoveredProject === index ? 'translateY(-10px) scale(1.05)' : undefined,
         }}
         onMouseEnter={() => onHover(index)}
         onMouseLeave={() => onHover(null)}
@@ -69,39 +73,39 @@ const ProjectCard = ({
         <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${project.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-300 -z-10`} aria-hidden="true" />
         
         {/* Project image with optimization */}
-        <div className="relative h-48 overflow-hidden">
+        <div className="relative h-40 md:h-48 overflow-hidden">
           <OptimizedImage
             src={project.imageUrl}
             alt={`Screenshot of ${project.title} project`}
             width={600}
             height={400}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="transition-transform duration-300 group-hover:scale-110"
+            className={`transition-transform duration-300 ${prefersReducedMotion ? '' : 'group-hover:scale-110'}`}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" aria-hidden="true" />
           
-          {/* Demo video toggle - moved to top-left */}
+          {/* Demo video toggle with improved mobile touch target */}
           <button
             onClick={handlePlayClick}
-            className="absolute top-4 left-4 p-2 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors z-10 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            className="absolute top-3 left-3 md:top-4 md:left-4 p-3 md:p-2 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors z-10 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
             aria-label={`Play demo video for ${project.title}`}
           >
             <Play className="text-white" size={16} aria-hidden="true" />
           </button>
         </div>
 
-        {/* Project content */}
-        <div className="p-6">
+        {/* Project content with improved spacing */}
+        <div className="p-4 md:p-6">
           <h3 
             id={`project-title-${index}`}
-            className="font-bold text-xl mb-3 text-primary group-hover:text-accent transition-colors duration-200"
+            className="font-bold text-lg md:text-xl mb-2 md:mb-3 text-primary group-hover:text-accent transition-colors duration-200"
           >
             {project.title}
           </h3>
 
           <p 
             id={`project-description-${index}`}
-            className="text-muted-foreground mb-4 text-sm leading-relaxed"
+            className="text-muted-foreground mb-3 md:mb-4 text-sm leading-relaxed"
           >
             {project.description}
           </p>
@@ -109,8 +113,8 @@ const ProjectCard = ({
           {/* Enhanced stats */}
           <ProjectStats stats={project.stats} />
 
-          {/* Tags */}
-          <div className="flex flex-wrap gap-2 mb-4" role="list" aria-label="Project technologies">
+          {/* Tags with improved mobile layout */}
+          <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-4" role="list" aria-label="Project technologies">
             {project.tags.map((tag) => (
               <span
                 key={tag}
