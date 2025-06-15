@@ -13,6 +13,7 @@ import Contact from "@/components/Contact";
 import ParticleBackground from "@/components/ParticleBackground";
 import SkipNavigation from "@/components/SkipNavigation";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import SEO from "@/components/SEO";
 
 const Index = () => {
   useEffect(() => {
@@ -40,6 +41,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden relative">
+      <SEO 
+        title="Kundhan Miriyala - Full Stack Developer & Data Scientist"
+        description="Full Stack Developer and Data Scientist specializing in AI-powered web applications, machine learning, and modern web technologies. Explore my portfolio, blog, and projects."
+        url="https://kundhan-miriyala.com"
+      />
+      
       <SkipNavigation />
       
       <ErrorBoundary componentName="Particle Background">

@@ -1,9 +1,9 @@
-
 import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Calendar, Clock, User, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useIntersectionObserver } from "@/hooks/useScrollAnimation";
+import SEO from "@/components/SEO";
 
 const blogPostsData = [
   {
@@ -372,6 +372,11 @@ const BlogPost = () => {
   if (!post) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
+        <SEO 
+          title="Post Not Found"
+          description="The blog post you're looking for doesn't exist."
+          url={`https://kundhan-miriyala.com/blog/${id}`}
+        />
         <div className="text-center">
           <h1 className="text-4xl font-bold text-primary mb-4">Post Not Found</h1>
           <p className="text-muted-foreground mb-8">The blog post you're looking for doesn't exist.</p>
@@ -386,8 +391,39 @@ const BlogPost = () => {
     );
   }
 
+  // Convert date to ISO format for structured data
+  const convertToISODate = (dateString: string) => {
+    const months = {
+      "Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04",
+      "May": "05", "Jun": "06", "Jul": "07", "Aug": "08",
+      "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12"
+    };
+    const [month, day, year] = dateString.split(" ");
+    const monthNum = months[month as keyof typeof months];
+    return `${year}-${monthNum}-${day.padStart(2, '0')}T10:00:00Z`;
+  };
+
+  const blogPostSEO = {
+    title: post.title,
+    description: post.excerpt,
+    author: post.author || "Kyle Morris",
+    publishedTime: convertToISODate(post.date),
+    tags: post.tags || [],
+    category: post.category,
+    readTime: post.readTime,
+    url: `https://kundhan-miriyala.com/blog/${post.id}`
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title={post.title}
+        description={post.excerpt}
+        type="article"
+        url={`https://kundhan-miriyala.com/blog/${post.id}`}
+        blogPost={blogPostSEO}
+      />
+      
       {/* Header with back button */}
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
