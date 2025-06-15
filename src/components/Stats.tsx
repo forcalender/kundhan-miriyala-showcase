@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Code, Users, Award, Coffee } from "lucide-react";
-import { useIntersectionObserver } from "@/hooks/useScrollAnimation";
+import { useOptimizedIntersectionObserver, useBatchAnimation } from "@/hooks/useOptimizedAnimation";
 
 const stats = [
   {
@@ -35,35 +35,45 @@ const stats = [
 ];
 
 const Stats = () => {
-  const [setRef, isVisible] = useIntersectionObserver(0.3);
+  const [setRef, isVisible] = useOptimizedIntersectionObserver(0.3, '0px 0px -20% 0px');
+  const { visibleItems, triggerBatchAnimation, isItemVisible } = useBatchAnimation(stats.length, 150);
   const [animatedValues, setAnimatedValues] = useState(stats.map(() => 0));
+
+  useEffect(() => {
+    if (isVisible) {
+      triggerBatchAnimation();
+    }
+  }, [isVisible, triggerBatchAnimation]);
 
   useEffect(() => {
     if (!isVisible) return;
 
-    const duration = 2000; // 2 seconds
-    const steps = 60;
-    const stepDelay = duration / steps;
+    // Optimized counter animation using requestAnimationFrame
+    const animateCounters = () => {
+      const duration = 2000;
+      const startTime = performance.now();
 
-    stats.forEach((stat, index) => {
-      let currentStep = 0;
-      const increment = stat.value / steps;
-      
-      const timer = setInterval(() => {
-        currentStep++;
-        const newValue = Math.min(Math.floor(increment * currentStep), stat.value);
+      const animate = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
         
-        setAnimatedValues(prev => {
-          const newValues = [...prev];
-          newValues[index] = newValue;
-          return newValues;
-        });
+        // Easing function for smooth animation
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        
+        setAnimatedValues(stats.map(stat => 
+          Math.floor(stat.value * easeOutQuart)
+        ));
 
-        if (currentStep >= steps) {
-          clearInterval(timer);
+        if (progress < 1) {
+          requestAnimationFrame(animate);
         }
-      }, stepDelay);
-    });
+      };
+
+      requestAnimationFrame(animate);
+    };
+
+    const timer = setTimeout(animateCounters, 300);
+    return () => clearTimeout(timer);
   }, [isVisible]);
 
   return (
@@ -72,11 +82,28 @@ const Stats = () => {
         {stats.map((stat, index) => (
           <div
             key={index}
-            className={`text-center group transition-all duration-700 delay-${index * 100} ${
-              isVisible ? 'animate-scale-in' : 'opacity-0 scale-90'
-            }`}
+            className="text-center group"
+            style={{
+              transform: isItemVisible(index) 
+                ? 'translate3d(0, 0, 0) scale(1)' 
+                : 'translate3d(0, 30px, 0) scale(0.9)',
+              opacity: isItemVisible(index) ? 1 : 0,
+              transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease-out',
+              willChange: 'transform, opacity'
+            }}
           >
-            <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r ${stat.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+            <div 
+              className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r ${stat.color} flex items-center justify-center transition-transform duration-300 will-change-transform`}
+              style={{
+                transform: isItemVisible(index) ? 'scale(1)' : 'scale(0.8)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
               <stat.icon className="text-white" size={24} />
             </div>
             
