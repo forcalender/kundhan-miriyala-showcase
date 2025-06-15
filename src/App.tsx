@@ -6,6 +6,7 @@ import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
+import { SecurityProvider } from "@/contexts/SecurityContext";
 import NoScriptFallback from "@/components/NoScriptFallback";
 import Index from "./pages/Index";
 import AllProjects from "./pages/AllProjects";
@@ -35,22 +36,24 @@ const App = () => (
     <NoScriptFallback />
     <QueryClientProvider client={queryClient}>
       <HelmetProvider>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/projects" element={<AllProjects />} />
-                <Route path="/blog" element={<AllBlogPosts />} />
-                <Route path="/blog/:id" element={<BlogPost />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
-        </ThemeProvider>
+        <SecurityProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/projects" element={<AllProjects />} />
+                  <Route path="/blog" element={<AllBlogPosts />} />
+                  <Route path="/blog/:id" element={<BlogPost />} />
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </TooltipProvider>
+          </ThemeProvider>
+        </SecurityProvider>
       </HelmetProvider>
     </QueryClientProvider>
   </>
