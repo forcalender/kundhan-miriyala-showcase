@@ -1,66 +1,78 @@
 
-import { useState, useMemo } from "react";
-
-interface BlogPost {
-  id: number;
-  title: string;
-  excerpt: string;
-  date: string;
-  readTime: string;
-  category: string;
-  gradient: string;
-  tags?: string[];
-  featured?: boolean;
-}
+import { useState, useMemo, useEffect } from "react";
+import { useBlogPosts, useBlogCategories } from "./useBlogData";
+import { BlogPost } from "@/services/blogService";
 
 interface UseBlogFiltersProps {
-  posts: BlogPost[];
   postsPerPage?: number;
+  initialCategory?: string;
 }
 
-export const useBlogFilters = ({ posts, postsPerPage = 4 }: UseBlogFiltersProps) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+export const useBlogFilters = ({ 
+  postsPerPage = 4, 
+  initialCategory = "all" 
+}: UseBlogFiltersProps = {}) => {
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const categories = useMemo(() => {
-    const uniqueCategories = Array.from(new Set(posts.map(post => post.category)));
-    return ["all", ...uniqueCategories];
-  }, [posts]);
+  // Fetch categories from the service
+  const { data: categories = [] } = useBlogCategories();
 
-  const filteredPosts = useMemo(() => {
-    if (selectedCategory === "all") return posts;
-    return posts.filter(post => post.category === selectedCategory);
-  }, [posts, selectedCategory]);
+  // Fetch posts with current filters
+  const { 
+    data: blogData, 
+    isLoading, 
+    error 
+  } = useBlogPosts({
+    page: currentPage,
+    limit: postsPerPage,
+    category: selectedCategory
+  });
 
   const paginationData = useMemo(() => {
-    const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
-    const startIndex = (currentPage - 1) * postsPerPage;
-    const paginatedPosts = filteredPosts.slice(startIndex, startIndex + postsPerPage);
-    
+    if (!blogData) {
+      return {
+        totalPages: 0,
+        paginatedPosts: [] as BlogPost[],
+        currentPage: 1,
+        hasNextPage: false,
+        hasPrevPage: false,
+        totalCount: 0
+      };
+    }
+
     return {
-      totalPages,
-      paginatedPosts,
-      currentPage,
-      hasNextPage: currentPage < totalPages,
-      hasPrevPage: currentPage > 1
+      totalPages: blogData.totalPages,
+      paginatedPosts: blogData.posts,
+      currentPage: blogData.currentPage,
+      hasNextPage: blogData.currentPage < blogData.totalPages,
+      hasPrevPage: blogData.currentPage > 1,
+      totalCount: blogData.totalCount
     };
-  }, [filteredPosts, currentPage, postsPerPage]);
+  }, [blogData]);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
-    setCurrentPage(1);
+    setCurrentPage(1); // Reset to first page when category changes
   };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
+  // Reset page when category changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory]);
+
   return {
     selectedCategory,
     categories,
-    filteredPosts,
+    filteredPosts: paginationData.paginatedPosts,
     paginationData,
     handleCategoryChange,
-    handlePageChange
+    handlePageChange,
+    isLoading,
+    error
   };
 };

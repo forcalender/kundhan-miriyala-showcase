@@ -1,97 +1,71 @@
-import React from "react";
+
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useIntersectionObserver } from "@/hooks/useScrollAnimation";
-import { useLoading } from "@/hooks/useLoading";
-import { useBlogFilters } from "@/hooks/useBlogFilters";
+import { useBlogPosts, useBlogCategories } from "@/hooks/useBlogData";
+import { usePagination } from "@/hooks/usePagination";
 import BlogPostsContainer from "@/components/blog/BlogPostsContainer";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { Button } from "@/components/ui/button";
 
-const allBlogPosts = [
-  {
-    id: 1,
-    title: "Building AI-Powered Web Applications",
-    excerpt: "Exploring the integration of machine learning models into modern web frameworks for enhanced user experiences.",
-    date: "Dec 10, 2024",
-    readTime: "5 min read",
-    category: "AI/ML",
-    gradient: "from-purple-400 to-pink-400",
-    tags: ["AI", "Machine Learning", "Web Development", "React"],
-    featured: true
-  },
-  {
-    id: 2,
-    title: "The Future of Accessible Design",
-    excerpt: "How inclusive design principles are shaping the next generation of digital products and user interfaces.",
-    date: "Nov 28, 2024",
-    readTime: "7 min read",
-    category: "Design",
-    gradient: "from-blue-400 to-cyan-400",
-    tags: ["Accessibility", "UX Design", "Inclusive Design"],
-    featured: true
-  },
-  {
-    id: 3,
-    title: "Optimizing React Performance",
-    excerpt: "Advanced techniques for building lightning-fast React applications with modern optimization strategies.",
-    date: "Nov 15, 2024",
-    readTime: "6 min read",
-    category: "Development",
-    gradient: "from-green-400 to-emerald-400",
-    tags: ["React", "Performance", "Optimization", "JavaScript"],
-    featured: false
-  },
-  {
-    id: 4,
-    title: "Data Science in Practice",
-    excerpt: "Real-world applications of data science techniques in solving complex business problems.",
-    date: "Oct 30, 2024",
-    readTime: "8 min read",
-    category: "Data Science",
-    gradient: "from-orange-400 to-red-400",
-    tags: ["Data Science", "Analytics", "Python", "Business Intelligence"],
-    featured: false
-  },
-  {
-    id: 5,
-    title: "Microservices Architecture Patterns",
-    excerpt: "Best practices for designing scalable microservices systems with modern cloud technologies.",
-    date: "Oct 15, 2024",
-    readTime: "9 min read",
-    category: "Development",
-    gradient: "from-indigo-400 to-purple-400",
-    tags: ["Microservices", "Architecture", "Cloud", "DevOps"],
-    featured: false
-  },
-  {
-    id: 6,
-    title: "Machine Learning Model Deployment",
-    excerpt: "A comprehensive guide to deploying ML models in production environments with monitoring and scaling.",
-    date: "Sep 28, 2024",
-    readTime: "12 min read",
-    category: "AI/ML",
-    gradient: "from-teal-400 to-green-400",
-    tags: ["MLOps", "Deployment", "Monitoring", "Production"],
-    featured: false
-  }
-];
-
 const AllBlogPosts = () => {
   const [setRef, isVisible] = useIntersectionObserver(0.1);
-  const { isLoading } = useLoading({ initialDelay: 200, minDuration: 600 });
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [currentPage, setCurrentPage] = useState(1);
   
-  const {
-    selectedCategory,
-    categories,
-    paginationData,
-    handleCategoryChange,
-    handlePageChange
-  } = useBlogFilters({ posts: allBlogPosts, postsPerPage: 4 });
+  // Fetch categories
+  const { data: categories = [] } = useBlogCategories();
+  
+  // Fetch blog posts with current filters
+  const { 
+    data: blogData, 
+    isLoading, 
+    error 
+  } = useBlogPosts({
+    page: currentPage,
+    limit: 4,
+    category: selectedCategory
+  });
 
-  const handleReadMore = (post: typeof allBlogPosts[0]) => {
+  // Set up pagination
+  const [paginationState, paginationActions] = usePagination({
+    totalItems: blogData?.totalCount || 0,
+    initialPage: currentPage,
+    initialItemsPerPage: 4,
+    onPageChange: setCurrentPage
+  });
+
+  // Handle category change
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    setCurrentPage(1);
+    paginationActions.goToFirstPage();
+  };
+
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    paginationActions.goToPage(page);
+  };
+
+  const handleReadMore = (post: any) => {
     console.log("Read more clicked for:", post.title);
   };
+
+  // Show error state
+  if (error) {
+    return (
+      <ErrorBoundary componentName="All Blog Posts">
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-4">Error loading blog posts</h2>
+            <p className="text-muted-foreground mb-4">Please try again later.</p>
+            <Button onClick={() => window.location.reload()}>Retry</Button>
+          </div>
+        </div>
+      </ErrorBoundary>
+    );
+  }
 
   return (
     <ErrorBoundary componentName="All Blog Posts">
@@ -115,13 +89,13 @@ const AllBlogPosts = () => {
             categories={categories}
             selectedCategory={selectedCategory}
             onCategoryChange={handleCategoryChange}
-            posts={paginationData.paginatedPosts}
+            posts={blogData?.posts || []}
             isLoading={isLoading}
             isVisible={isVisible}
-            currentPage={paginationData.currentPage}
-            totalPages={paginationData.totalPages}
-            hasNextPage={paginationData.hasNextPage}
-            hasPrevPage={paginationData.hasPrevPage}
+            currentPage={paginationState.currentPage}
+            totalPages={paginationState.totalPages}
+            hasNextPage={paginationState.hasNextPage}
+            hasPrevPage={paginationState.hasPrevPage}
             onPageChange={handlePageChange}
             onReadMore={handleReadMore}
           />
