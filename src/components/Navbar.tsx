@@ -1,6 +1,8 @@
+
 import React, { useState } from "react";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link, useLocation } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
@@ -13,14 +15,15 @@ const navLinks = [
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
 
   return (
     <nav className="w-full flex justify-between items-center py-4 px-6 bg-background/90 border-b sticky top-0 z-50 backdrop-blur-md animate-fade-in">
-      <a href="/" className="flex items-center gap-2 animate-scale-in">
+      <Link to="/" className="flex items-center gap-2 animate-scale-in">
         <span className="text-2xl font-extrabold font-playfair tracking-tight text-primary hover:text-accent transition-colors duration-300">
           KM
         </span>
-      </a>
+      </Link>
       
       {/* Desktop Nav */}
       <div className="hidden md:flex items-center gap-6">
@@ -28,7 +31,7 @@ const Navbar = () => {
           {navLinks.map((link, index) => (
             <a
               key={link.label}
-              href={link.href}
+              href={location.pathname === '/' ? link.href : `/${link.href}`}
               className="text-muted-foreground hover:text-primary font-medium transition-all duration-300 px-1 py-0.5 relative group animate-fade-in"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
@@ -36,6 +39,14 @@ const Navbar = () => {
               <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all duration-300" />
             </a>
           ))}
+          <Link
+            to="/blog"
+            className="text-muted-foreground hover:text-primary font-medium transition-all duration-300 px-1 py-0.5 relative group animate-fade-in"
+            style={{ animationDelay: `${navLinks.length * 0.1}s` }}
+          >
+            All Posts
+            <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all duration-300" />
+          </Link>
         </div>
         <ThemeToggle />
       </div>
@@ -57,7 +68,7 @@ const Navbar = () => {
             {navLinks.map((link, index) => (
               <a
                 key={link.label}
-                href={link.href}
+                href={location.pathname === '/' ? link.href : `/${link.href}`}
                 className="text-muted-foreground hover:text-primary font-medium transition-colors px-2 py-1 rounded hover:bg-accent/10 animate-fade-in"
                 style={{ animationDelay: `${index * 0.05}s` }}
                 onClick={() => setMenuOpen(false)}
@@ -65,6 +76,14 @@ const Navbar = () => {
                 {link.label}
               </a>
             ))}
+            <Link
+              to="/blog"
+              className="text-muted-foreground hover:text-primary font-medium transition-colors px-2 py-1 rounded hover:bg-accent/10 animate-fade-in"
+              style={{ animationDelay: `${navLinks.length * 0.05}s` }}
+              onClick={() => setMenuOpen(false)}
+            >
+              All Posts
+            </Link>
           </div>
         )}
       </div>
