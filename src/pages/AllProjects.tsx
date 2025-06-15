@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { ArrowLeft, ExternalLink, Github, Eye, Play, Pause } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -191,10 +192,10 @@ const AllProjects = () => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                     
-                    {/* Demo video toggle */}
+                    {/* Demo video toggle - moved to top-left */}
                     <button
                       onClick={() => handlePlayClick(proj, index)}
-                      className="absolute top-4 right-4 p-2 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors"
+                      className="absolute top-4 left-4 p-2 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors z-10"
                     >
                       <Play className="text-white" size={16} />
                     </button>
@@ -257,7 +258,7 @@ const AllProjects = () => {
 
                   {/* Demo indicator */}
                   {playingDemo === index && (
-                    <div className="absolute top-2 left-2 w-3 h-3 bg-red-500 rounded-full animate-pulse z-10"></div>
+                    <div className="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full animate-pulse z-10"></div>
                   )}
                 </div>
               ))}

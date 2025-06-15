@@ -73,10 +73,10 @@ const ProjectCard = ({
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
           
-          {/* Demo video toggle */}
+          {/* Demo video toggle - moved to top-left */}
           <button
             onClick={handlePlayClick}
-            className="absolute top-4 right-4 p-2 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors"
+            className="absolute top-4 left-4 p-2 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors z-10"
           >
             <Play className="text-white" size={16} />
           </button>
